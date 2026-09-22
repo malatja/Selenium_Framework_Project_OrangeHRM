@@ -14,131 +14,236 @@ import utils.LocatorReader;
 
 public class ADM_003_AddUserWithValidInformation {
 
-    private WebDriver driver;
+        private WebDriver driver;
 
-    // Constructor
-    public ADM_003_AddUserWithValidInformation(WebDriver driver) {
-        this.driver = driver;
-    }
+        // Constructor
+        public ADM_003_AddUserWithValidInformation(WebDriver driver) {
+                this.driver = driver;
+        }
 
-     // Element Locators
-    private By adminTabLocator = By.xpath(LocatorReader.getLocator("adminPage.adminTab_xpath"));
-    private By userManagementDropdownLocator = By.xpath(LocatorReader.getLocator("adminPage.userManagement.dropdown_xpath"));
-    private By usersLinkLocator = By.xpath(LocatorReader.getLocator("adminPage.users.link_xpath"));
-    private By usersAddButtonLocator = By.xpath(LocatorReader.getLocator("adminPage.users.addButton_xpath"));
-    private By userRoleDropdownLocator = By.xpath(LocatorReader.getLocator("adminPage.users.userRoleDropdown_xpath"));
-    private By optionsLocator = By.xpath(LocatorReader.getLocator("adminPage.users.options_xpath"));
-    private By employeeNameInputLocator = By.xpath(LocatorReader.getLocator("adminPage.users.employeeNameInput_xpath"));
-    private By employeeSuggestionsLocator = By.xpath(LocatorReader.getLocator("adminPage.users.employeeSuggestions_xpath"));
-    private By statusDropdownLocator = By.xpath(LocatorReader.getLocator("adminPage.users.statusDropdown_xpath"));
-    private By usersUsernameInputLocator = By.xpath(LocatorReader.getLocator("adminPage.users.usernameInput_xpath"));
-    private By passwordInputLocator = By.xpath(LocatorReader.getLocator("adminPage.users.passwordInput_xpath"));
-    private By confirmPasswordInputLocator = By.xpath(LocatorReader.getLocator("adminPage.users.confirmPasswordInput_xpath"));
-    private By saveButtonLocator = By.xpath(LocatorReader.getLocator("adminPage.users.saveButton_xpath"));
+        // Element Locators
+        private By usernameFieldLocator() {
+                return By.xpath(LocatorReader.getLocator("loginPage.username_xpath"));
+        }
 
+        private By passwordFieldLocator() {
+                return By.xpath(LocatorReader.getLocator("loginPage.password_xpath"));
+        }
 
+        private By loginButtonLocator() {
+                return By.xpath(LocatorReader.getLocator("loginPage.loginButton_xpath"));
+        }
 
-     // Action Methods
-    public void clickAdminTab() {
-        new WebDriverWait(driver, Duration.ofSeconds(20))
-                .until(ExpectedConditions.visibilityOfElementLocated(adminTabLocator));
-        driver.findElement(adminTabLocator).click();
-    }
+        private By adminTabLocator = By.xpath(LocatorReader.getLocator("adminPage.adminTab_xpath"));
+        private By userManagementDropdownLocator = By
+                        .xpath(LocatorReader.getLocator("adminPage.userManagement.dropdown_xpath"));
+        private By usersLinkLocator = By.xpath(LocatorReader.getLocator("adminPage.users.link_xpath"));
+        private By usersAddButtonLocator = By.xpath(LocatorReader.getLocator("adminPage.users.addButton_xpath"));
+        private By userRoleDropdownLocator = By
+                        .xpath(LocatorReader.getLocator("adminPage.users.userRoleDropdown_xpath"));
+        private By optionsLocator = By.xpath(LocatorReader.getLocator("adminPage.users.options_xpath"));
+        private By employeeNameInputLocator = By
+                        .xpath(LocatorReader.getLocator("adminPage.users.employeeNameInput_xpath"));
+        private By employeeSuggestionsLocator = By
+                        .xpath(LocatorReader.getLocator("adminPage.users.employeeSuggestions_xpath"));
+        private By statusDropdownLocator = By.xpath(LocatorReader.getLocator("adminPage.users.statusDropdown_xpath"));
+        private By usersUsernameInputLocator = By
+                        .xpath(LocatorReader.getLocator("adminPage.users.usernameInput_xpath"));
+        private By passwordInputLocator = By.xpath(LocatorReader.getLocator("adminPage.users.passwordInput_xpath"));
+        private By confirmPasswordInputLocator = By
+                        .xpath(LocatorReader.getLocator("adminPage.users.confirmPasswordInput_xpath"));
+        private By saveButtonLocator = By.xpath(LocatorReader.getLocator("adminPage.users.saveButton_xpath"));
 
-    public void clickUserManagementDropdown() {
-        new WebDriverWait(driver, Duration.ofSeconds(20))
-                .until(ExpectedConditions.visibilityOfElementLocated(userManagementDropdownLocator));
-        driver.findElement(userManagementDropdownLocator).click();
-    }
+        // Action Methods
+        public void enterCredentialsAndLogin(String username, String password) {
+                new WebDriverWait(driver, Duration.ofSeconds(10))
+                                .until(ExpectedConditions.visibilityOfElementLocated(usernameFieldLocator()));
+                driver.findElement(usernameFieldLocator()).sendKeys(username);
+                driver.findElement(passwordFieldLocator()).sendKeys(password);
+                driver.findElement(loginButtonLocator()).click();
+        }
 
-    public void clickUsersLink() {
-        new WebDriverWait(driver, Duration.ofSeconds(20))
-                .until(ExpectedConditions.visibilityOfElementLocated(usersLinkLocator));
-        driver.findElement(usersLinkLocator).click();
-    }
+        public void clickAdminTab() {
 
-    public void clickUsersAddButton() {
-        new WebDriverWait(driver, Duration.ofSeconds(20))
-                .until(ExpectedConditions.visibilityOfElementLocated(usersAddButtonLocator));
-        driver.findElement(usersAddButtonLocator).click();
-    }
+                new WebDriverWait(driver, Duration.ofSeconds(20))
+                                .until(ExpectedConditions.visibilityOfElementLocated(adminTabLocator));
+                driver.findElement(adminTabLocator).click();
+        }
 
-    public void selectUserRole() {
+        public void clickUserManagementDropdown() {
+                new WebDriverWait(driver, Duration.ofSeconds(20))
+                                .until(ExpectedConditions.visibilityOfElementLocated(userManagementDropdownLocator));
+                driver.findElement(userManagementDropdownLocator).click();
+        }
 
-        WebDriverWait wait =
-                new WebDriverWait(driver, Duration.ofSeconds(20));
+        public void clickUsersLink() {
+                new WebDriverWait(driver, Duration.ofSeconds(20))
+                                .until(ExpectedConditions.visibilityOfElementLocated(usersLinkLocator));
+                driver.findElement(usersLinkLocator).click();
+        }
 
-        // Click the dropdown
-        wait.until(ExpectedConditions.elementToBeClickable(
-                userRoleDropdownLocator)).click();
+        public void clickUsersAddButton() {
+                new WebDriverWait(driver, Duration.ofSeconds(20))
+                                .until(ExpectedConditions.visibilityOfElementLocated(usersAddButtonLocator));
+                driver.findElement(usersAddButtonLocator).click();
+        }
 
-        // Wait for options to appear
-        List<WebElement> options =
-                wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
-                        optionsLocator));
+        public void selectUserRole(String userRole) {
 
-        System.out.println("Options available: " + options);     
-                
-        // Select first actual option (Admin)
-        options.get(1).click();
-        
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+                // Click the dropdown
+                wait.until(ExpectedConditions.elementToBeClickable(
+                                userRoleDropdownLocator)).click();
+
+                // Wait for options to appear
+                List<WebElement> options = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                                optionsLocator));
+
+                System.out.println("Options available: " + options);
+
+                // Select the option based on the provided userRole
+                for (WebElement option : options) {
+                        if (option.getText().equals(userRole)) {
+                                option.click();
+                                break;
+                        }
+                }
 
         }
 
+        public void typeEmployeeNameHintAndSelectFromSuggestions(
+                        String employeeNameHint) {
 
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-    public void typeEmployeeNameHintAndSelectFromSuggestions() {
+                // Employee Name input
+                By employeeNameInput = By.xpath("//input[@placeholder='Type for hints...']");
 
-    WebDriverWait wait =
-            new WebDriverWait(driver, Duration.ofSeconds(20));
+                // All autocomplete options
+                By employeeOptions = By.xpath("//div[@role='listbox']//div[@role='option']");
 
-    // Employee Name input field
-    By employeeNameInput =
-            By.xpath("//input[@placeholder='Type for hints...']");
+                // 1. Wait for Employee Name field
+                WebElement employeeName = wait.until(
+                                ExpectedConditions.elementToBeClickable(
+                                                employeeNameInput));
 
-    // Autocomplete options
-    By employeeOptions =
-            By.xpath("(//div[@role='listbox']//div[@role='option'])[1]");
+                // 2. Clear existing value
+                employeeName.clear();
 
-    // 1. Wait for Employee Name input
-    WebElement employeeName =
-            wait.until(ExpectedConditions.elementToBeClickable(
-                    employeeNameInput));
+                // 3. Type Excel hint, for example "Pe"
+                employeeName.sendKeys(employeeNameHint);
 
-    // 2. Type partial employee name
-    employeeName.clear();
-    employeeName.sendKeys("p");
+                // 4. Wait until autocomplete options are loaded
+                wait.until(
+                                ExpectedConditions.numberOfElementsToBeMoreThan(
+                                                employeeOptions,
+                                                0));
 
-    // 3. Wait until suggestions appear
-    List<WebElement> options =
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
-                    employeeOptions));
+                // 5. Get the available suggestions
+                List<WebElement> suggestions = driver.findElements(employeeOptions);
 
-    // 4. Click the first suggestion
-    options.get(0).click();
-}
+                System.out.println(
+                                "Employee suggestions found: "
+                                                + suggestions.size());
 
-        
+                // 6. Print suggestions for debugging
+                for (WebElement suggestion : suggestions) {
 
-//     public void typePassword() {
-//         new WebDriverWait(driver, Duration.ofSeconds(20))
-//                 .until(ExpectedConditions.visibilityOfElementLocated(passwordInputLocator));
-//         driver.findElement(passwordInputLocator).clear();
-//         driver.findElement(passwordInputLocator).sendKeys("Password123!");
-//     }
+                        System.out.println(
+                                        "Employee suggestion: "
+                                                        + suggestion.getText());
+                }
 
-//     public void typeConfirmPassword() {
-//         new WebDriverWait(driver, Duration.ofSeconds(20))
-//                 .until(ExpectedConditions.visibilityOfElementLocated(confirmPasswordInputLocator));
-//         driver.findElement(confirmPasswordInputLocator).clear();
-//         driver.findElement(confirmPasswordInputLocator).sendKeys("Password123!");
-//     }
+                // 7. Click the first real employee suggestion
+                for (WebElement suggestion : suggestions) {
 
-//     public void clickSaveButton() {
-//         new WebDriverWait(driver, Duration.ofSeconds(20))
-//                 .until(ExpectedConditions.visibilityOfElementLocated(saveButtonLocator));
-//         driver.findElement(saveButtonLocator).click();
-//     }
+                        String suggestionText = suggestion.getText().trim();
 
+                        if (!suggestionText.isEmpty()
+                                        && !suggestionText.equalsIgnoreCase(
+                                                        "Searching...")
+                                        && !suggestionText.equalsIgnoreCase(
+                                                        "No Records Found")) {
+
+                                wait.until(
+                                                ExpectedConditions.elementToBeClickable(
+                                                                suggestion))
+                                                .click();
+
+                                System.out.println(
+                                                "Selected employee: "
+                                                                + suggestionText);
+
+                                return;
+                        }
+                }
+
+                throw new RuntimeException(
+                                "No valid employee suggestion found for hint: "
+                                                + employeeNameHint);
+        }
+
+        public void selectStatus(String status) {
+
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+                // Click the status dropdown
+                wait.until(ExpectedConditions.elementToBeClickable(
+                                statusDropdownLocator)).click();
+
+                // Wait for options to appear
+                List<WebElement> options = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                                optionsLocator));
+
+                System.out.println("Options available: " + options);
+
+                // Select the option based on the provided status
+                for (WebElement option : options) {
+                        if (option.getText().equals(status)) {
+                                option.click();
+                                break;
+                        }
+                }
+        }
+
+        public void enterUsername(String username) {
+
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+                wait.until(ExpectedConditions.visibilityOfElementLocated(usersUsernameInputLocator));
+                driver.findElement(usersUsernameInputLocator).clear();
+                driver.findElement(usersUsernameInputLocator).sendKeys(username);
+        }
+
+        public void typePassword(String password) {
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+                wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInputLocator));
+                driver.findElement(passwordInputLocator).clear();
+                driver.findElement(passwordInputLocator).sendKeys(password);
+        }
+
+        public void typeConfirmPassword(String confirmPassword) {
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+                wait.until(ExpectedConditions.visibilityOfElementLocated(confirmPasswordInputLocator));
+                driver.findElement(confirmPasswordInputLocator).clear();
+                driver.findElement(confirmPasswordInputLocator).sendKeys(confirmPassword);
+        }
+
+        public void clickSaveButton() {
+
+                WebDriverWait wait =
+                        new WebDriverWait(driver, Duration.ofSeconds(20));
+
+                WebElement saveButton = wait.until(
+                        ExpectedConditions.elementToBeClickable(
+                                saveButtonLocator
+                        )
+                );
+
+                saveButton.click();
+        }
 
 }

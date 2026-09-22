@@ -19,6 +19,15 @@ public class ADM_002_VerifyUserManagementPageLoads {
     }
     
     // Element Locators
+    private By usernameFieldLocator(){
+        return By.xpath(LocatorReader.getLocator("loginPage.username_xpath"));
+    }
+    private By passwordFieldLocator(){
+        return By.xpath(LocatorReader.getLocator("loginPage.password_xpath"));
+    }
+    private By loginButtonLocator(){
+        return By.xpath(LocatorReader.getLocator("loginPage.loginButton_xpath"));
+    }
     private By adminTabLocator = By.xpath(LocatorReader.getLocator("adminPage.adminTab_xpath"));
     private By userManagementDropdownLocator = By.xpath(LocatorReader.getLocator("adminPage.userManagement.dropdown_xpath"));
     private By usersLinkLocator = By.xpath(LocatorReader.getLocator("adminPage.users.link_xpath"));
@@ -34,6 +43,14 @@ public class ADM_002_VerifyUserManagementPageLoads {
 
     
     // Action Methods
+    public void enterCredentialsAndLogin(String username, String password){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(usernameFieldLocator()));            
+        driver.findElement(usernameFieldLocator()).sendKeys(username);
+        driver.findElement(passwordFieldLocator()).sendKeys(password);
+        driver.findElement(loginButtonLocator()).click();
+    }
+    
     public void clickAdminTab() {
         new WebDriverWait(driver, Duration.ofSeconds(20))
                 .until(ExpectedConditions.visibilityOfElementLocated(adminTabLocator));

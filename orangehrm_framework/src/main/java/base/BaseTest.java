@@ -60,9 +60,9 @@ public class BaseTest {
         );
     }
 
-//     @AfterMethod
-//     public void tearDown() {
+    @AfterMethod
+    public void tearDown() {
 
-//         DriverFactory.quitDriver();
-//     }
+        DriverFactory.quitDriver();
+    }
 }

@@ -1,6 +1,7 @@
 package tests;
 
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import base.BaseTest;
@@ -9,7 +10,7 @@ import utils.ConfigReader;
 import utils.ExcelReader;
 
 
-
+@Listeners(utils.TestNGListener.class)
 public class Login_Suite_Tests extends BaseTest  {
 
     // ================= DATA PROVIDERS =================

@@ -2,11 +2,15 @@ package tests;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 
 import base.BaseTest;
 import pages.admin_suite.ADM_001_TestAdminTabAndUserManagementHeaderVisibility;
 import pages.admin_suite.ADM_002_VerifyUserManagementPageLoads;
+import utils.HybridStepLogger;
 
+
+@Listeners(utils.TestNGListener.class)
 public class Admin_Suite_Tests extends BaseTest {
 
     // ========== DATA PROVIDERS ==========
@@ -114,8 +118,12 @@ public class Admin_Suite_Tests extends BaseTest {
                 new ADM_001_TestAdminTabAndUserManagementHeaderVisibility(driver);
                 
         adm_001_Page.enterCredentialsAndLogin(username, password);
+
+        HybridStepLogger.logStepWithScreenshot(driver, "Step 1: Entered credentials and logged in successfully");
+
         adm_001_Page.clickAdminTab();
         adm_001_Page.isAdminAndUserManagementHeaderVisible();
+        HybridStepLogger.logStepWithScreenshot(driver, "Step 2: Admin Tab Clicked and Admin and User Management header is visible");
 
     }
 

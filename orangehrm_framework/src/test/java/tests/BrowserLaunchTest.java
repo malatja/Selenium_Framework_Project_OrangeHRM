@@ -2,8 +2,11 @@ package tests;
 
 import base.BaseTest;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+
+@Listeners(utils.TestNGListener.class)
 public class BrowserLaunchTest extends BaseTest {
 
     @Test(description = "Verify that the browser launches successfully")

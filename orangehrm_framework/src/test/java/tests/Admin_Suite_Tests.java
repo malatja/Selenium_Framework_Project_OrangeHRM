@@ -171,6 +171,7 @@ public class Admin_Suite_Tests extends BaseTest {
         adm_003_Page.typePassword(passwordValue);
         adm_003_Page.typeConfirmPassword(confirmPassword);
         adm_003_Page.clickSaveButton();
+        adm_003_Page.isAdminAndUserManagementHeaderDisplayed();
     }
 
 }

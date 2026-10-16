@@ -34,9 +34,8 @@
 
             mvn clean test -DsuiteXmlFile=admin_suite.xml
         -->
-        <suiteXmlFile>
-            admin_suite.xml
-        </suiteXmlFile>
+        <suiteXmlFile>admin_suite.xml</suiteXmlFile>
+        <!-- <suiteXmlFile>parallel_suite.xml</suiteXmlFile> -->
 
     </properties>
 

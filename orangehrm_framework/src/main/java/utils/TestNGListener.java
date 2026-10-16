@@ -1,19 +1,18 @@
+
 package utils;
 
 import org.testng.IExecutionListener;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-import base.DriverFactory;
-
 public class TestNGListener
         implements ITestListener, IExecutionListener {
 
 
     /**
-     * Runs once before the complete
-     * TestNG execution starts.
+     * Runs once before the complete TestNG execution.
      */
+
     @Override
     public void onExecutionStart() {
 
@@ -32,6 +31,10 @@ public class TestNGListener
         );
 
         System.out.println(
+                "PARALLEL EXECUTION ENABLED"
+        );
+
+        System.out.println(
                 "=========================================="
         );
     }
@@ -40,6 +43,7 @@ public class TestNGListener
     /**
      * Runs whenever a test method starts.
      */
+
     @Override
     public void onTestStart(ITestResult result) {
 
@@ -52,10 +56,7 @@ public class TestNGListener
                         .getDescription();
 
 
-        /*
-         * Use default description
-         * when @Test description is empty.
-         */
+        // Default description
         if (description == null
                 || description.isBlank()) {
 
@@ -64,26 +65,27 @@ public class TestNGListener
         }
 
 
-        /*
-         * Create the test inside
-         * Extent Reports.
-         */
+        // Create ExtentTest for current thread
         ExtentReportsManager.createTest(
                 testName,
                 description
         );
 
 
-        /*
-         * Log test start.
-         */
+        // Log test start
         if (ExtentReportsManager.getTest() != null) {
 
             ExtentReportsManager
                     .getTest()
                     .info(
-                            "Test Started: "
-                                    + testName
+                            "Test Started: " + testName
+                    );
+
+            ExtentReportsManager
+                    .getTest()
+                    .info(
+                            "Thread ID: "
+                                    + Thread.currentThread().getId()
                     );
         }
 
@@ -91,6 +93,8 @@ public class TestNGListener
         System.out.println(
                 "TEST STARTED: "
                         + testName
+                        + " | Thread: "
+                        + Thread.currentThread().getId()
         );
     }
 
@@ -98,60 +102,31 @@ public class TestNGListener
     /**
      * Runs when a test PASSES.
      */
+
     @Override
-    public void onTestSuccess(
-            ITestResult result) {
+    public void onTestSuccess(ITestResult result) {
 
         String testName =
                 result.getMethod()
                         .getMethodName();
 
 
-        /*
-         * Capture final PASS screenshot.
-         *
-         * HybridStepLogger will:
-         *
-         * 1. Take ONE screenshot
-         * 2. Save screenshot physically
-         * 3. Attach screenshot to Allure
-         * 4. Display screenshot in Extent
-         */
-        if (DriverFactory.hasDriver()) {
-
-            HybridStepLogger
-                    .logStepWithScreenshot(
-                            DriverFactory.getDriver(),
-                            testName
-                                    + " - PASS Evidence"
-                    );
-        }
-
-
-        /*
-         * Mark test as PASSED
-         * inside Extent Report.
-         */
         if (ExtentReportsManager.getTest() != null) {
 
             ExtentReportsManager
                     .getTest()
                     .pass(
-                            "✅ Test Passed"
+                            "TEST PASSED"
                     );
         }
 
 
         System.out.println(
-                "TEST PASSED: "
-                        + testName
+                "TEST PASSED: " + testName
         );
 
 
-        /*
-         * Remove ExtentTest from
-         * current ThreadLocal.
-         */
+        // Remove current thread ExtentTest
         ExtentReportsManager.removeTest();
     }
 
@@ -159,9 +134,9 @@ public class TestNGListener
     /**
      * Runs when a test FAILS.
      */
+
     @Override
-    public void onTestFailure(
-            ITestResult result) {
+    public void onTestFailure(ITestResult result) {
 
         String testName =
                 result.getMethod()
@@ -171,28 +146,7 @@ public class TestNGListener
                 result.getThrowable();
 
 
-        /*
-         * Capture FAILURE screenshot
-         * before WebDriver is closed.
-         *
-         * The SAME screenshot is attached
-         * to both Allure and Extent.
-         */
-        if (DriverFactory.hasDriver()) {
-
-            HybridStepLogger
-                    .logStepWithScreenshot(
-                            DriverFactory.getDriver(),
-                            testName
-                                    + " - FAILURE Evidence"
-                    );
-        }
-
-
-        /*
-         * Add exception / stack trace
-         * to Extent Report.
-         */
+        // Record failure in Extent Report
         if (ExtentReportsManager.getTest() != null) {
 
             if (throwable != null) {
@@ -206,22 +160,18 @@ public class TestNGListener
                 ExtentReportsManager
                         .getTest()
                         .fail(
-                                "❌ Test Failed"
+                                "TEST FAILED"
                         );
             }
         }
 
 
         System.err.println(
-                "TEST FAILED: "
-                        + testName
+                "TEST FAILED: " + testName
         );
 
 
-        /*
-         * Remove ExtentTest from
-         * current ThreadLocal.
-         */
+        // Remove current thread ExtentTest
         ExtentReportsManager.removeTest();
     }
 
@@ -229,9 +179,9 @@ public class TestNGListener
     /**
      * Runs when a test is SKIPPED.
      */
+
     @Override
-    public void onTestSkipped(
-            ITestResult result) {
+    public void onTestSkipped(ITestResult result) {
 
         String testName =
                 result.getMethod()
@@ -241,38 +191,15 @@ public class TestNGListener
                 result.getThrowable();
 
 
-        /*
-         * Capture screenshot if
-         * WebDriver is available.
-         */
-        if (DriverFactory.hasDriver()) {
-
-            HybridStepLogger
-                    .logStepWithScreenshot(
-                            DriverFactory.getDriver(),
-                            testName
-                                    + " - SKIPPED Evidence"
-                    );
-        }
-
-
-        /*
-         * Mark test as skipped
-         * in Extent Reports.
-         */
+        // Record skipped test in Extent Report
         if (ExtentReportsManager.getTest() != null) {
 
             ExtentReportsManager
                     .getTest()
                     .skip(
-                            "⚠️ Test Skipped"
+                            "TEST SKIPPED"
                     );
 
-
-            /*
-             * Add reason / exception
-             * when available.
-             */
             if (throwable != null) {
 
                 ExtentReportsManager
@@ -283,30 +210,27 @@ public class TestNGListener
 
 
         System.out.println(
-                "TEST SKIPPED: "
-                        + testName
+                "TEST SKIPPED: " + testName
         );
 
 
-        /*
-         * Remove ExtentTest from
-         * ThreadLocal.
-         */
+        // Remove current thread ExtentTest
         ExtentReportsManager.removeTest();
     }
 
 
     /**
-     * Runs once after the complete
-     * TestNG execution finishes.
+     * Runs once after the complete TestNG execution.
      */
+
     @Override
     public void onExecutionFinish() {
 
         /*
-         * Write all Extent test information
-         * into the HTML report.
+         * Flush only after all parallel
+         * test executions have completed.
          */
+
         ExtentReportsManager.flushReport();
 
 
@@ -323,9 +247,7 @@ public class TestNGListener
         );
 
 
-        /*
-         * Extent Report location
-         */
+        // Extent Report location
         System.out.println(
                 "Extent Report:"
         );
@@ -337,9 +259,7 @@ public class TestNGListener
         );
 
 
-        /*
-         * Allure Results location
-         */
+        // Allure Results location
         System.out.println(
                 "Allure Results:"
         );
@@ -348,6 +268,17 @@ public class TestNGListener
                 System.getProperty("user.dir")
                         + "/target/allure-report/"
                         + "allure-results"
+        );
+
+
+        // Screenshot location
+        System.out.println(
+                "Screenshots:"
+        );
+
+        System.out.println(
+                System.getProperty("user.dir")
+                        + "/target/test-artifacts/screenshots"
         );
 
 

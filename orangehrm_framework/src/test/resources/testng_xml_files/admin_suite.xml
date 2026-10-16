@@ -4,6 +4,10 @@
 
 <suite name="OrangeHRM Admin Suite">
 
+    <listeners>
+        <listener class-name="utils.TestNGListener"/>
+    </listeners>
+
     <test name="Admin Suite Tests">
 
         <classes>

@@ -1,3 +1,4 @@
+
 package utils;
 
 import java.io.ByteArrayInputStream;
@@ -19,9 +20,9 @@ public class HybridStepLogger {
     /*
      * Central screenshot directory.
      *
-     * Screenshots:
      * target/test-artifacts/screenshots/
      */
+
     private static final Path SCREENSHOT_DIR =
             Paths.get(
                     "target",
@@ -33,10 +34,13 @@ public class HybridStepLogger {
     /**
      * Takes ONE screenshot and:
      *
-     * 1. Saves it physically
-     * 2. Attaches it to Allure
-     * 3. Displays it inside Extent Report
+     * 1. Saves it physically.
+     * 2. Attaches it to Allure.
+     * 3. Displays it inside Extent Report.
+     *
+     * Safe for parallel execution.
      */
+
     public static void logStepWithScreenshot(
             WebDriver driver,
             String stepName) {
@@ -51,21 +55,13 @@ public class HybridStepLogger {
 
         try {
 
-            /*
-             * =========================================
-             * CREATE SCREENSHOT DIRECTORY
-             * =========================================
-             */
+            // Create screenshot directory
             Files.createDirectories(
                     SCREENSHOT_DIR
             );
 
 
-            /*
-             * =========================================
-             * CLEAN STEP NAME
-             * =========================================
-             */
+            // Clean screenshot name
             String cleanStepName =
                     stepName.replaceAll(
                             "[^a-zA-Z0-9]",
@@ -73,9 +69,7 @@ public class HybridStepLogger {
                     );
 
 
-            /*
-             * Limit filename length.
-             */
+            // Limit filename length
             if (cleanStepName.length() > 40) {
 
                 cleanStepName =
@@ -86,11 +80,7 @@ public class HybridStepLogger {
             }
 
 
-            /*
-             * =========================================
-             * UNIQUE SCREENSHOT NAME
-             * =========================================
-             */
+            // Generate unique screenshot filename
             String fileName =
                     String.format(
                             "%d_%s_%s.png",
@@ -111,11 +101,7 @@ public class HybridStepLogger {
                     );
 
 
-            /*
-             * =========================================
-             * TAKE ONE SELENIUM SCREENSHOT
-             * =========================================
-             */
+            // Take ONE Selenium screenshot
             byte[] screenshotBytes =
                     ((TakesScreenshot) driver)
                             .getScreenshotAs(
@@ -123,39 +109,27 @@ public class HybridStepLogger {
                             );
 
 
-            /*
-             * =========================================
-             * SAVE SCREENSHOT
-             * =========================================
-             */
+            // Save screenshot physically
             Files.write(
                     screenshotPath,
                     screenshotBytes
             );
 
 
-            /*
-             * =========================================
-             * ALLURE ATTACHMENT
-             * =========================================
-             */
+            // Attach screenshot to Allure
             Allure.attachment(
                     stepName,
                     "image/png",
                     new ByteArrayInputStream(
                             screenshotBytes
-                    ), null
+                    ),
+                    null
             );
 
 
-            /*
-             * =========================================
-             * EXTENT REPORT
-             * =========================================
-             */
+            // Get ExtentTest for current thread
             ExtentTest extentTest =
-                    ExtentReportsManager
-                            .getTest();
+                    ExtentReportsManager.getTest();
 
 
             if (extentTest != null) {
@@ -169,38 +143,20 @@ public class HybridStepLogger {
                  * Screenshot:
                  *
                  * target/test-artifacts/screenshots/
-                 *
-                 * Therefore:
-                 *
-                 * ../test-artifacts/screenshots/image.png
                  */
+
                 String relativePath =
                         "../test-artifacts/screenshots/"
                                 + fileName;
 
 
-                /*
-                 * Add the step first.
-                 */
+                // Log execution step
                 extentTest.info(
                         stepName
                 );
 
 
-                /*
-                 * Add screenshot to the TEST itself.
-                 *
-                 * This is important:
-                 *
-                 * Do NOT use:
-                 *
-                 * extentTest.info(stepName)
-                 *     .addScreenCaptureFromPath(...)
-                 *
-                 * We want the screenshot displayed in
-                 * the test evidence area like your
-                 * Playwright report.
-                 */
+                // Attach screenshot to Extent Report
                 extentTest.addScreenCaptureFromPath(
                         relativePath
                 );
@@ -208,25 +164,24 @@ public class HybridStepLogger {
             } else {
 
                 System.out.println(
-                        "⚠️ EXTENT TEST NULL ➝ "
+                        "EXTENT TEST NULL: "
                                 + stepName
                 );
             }
 
 
-            /*
-             * Console output
-             */
             System.out.println(
-                    "📸 SCREENSHOT CAPTURED ➝ "
+                    "SCREENSHOT CAPTURED: "
                             + stepName
+                            + " | Thread: "
+                            + Thread.currentThread().getId()
             );
 
 
         } catch (Exception e) {
 
             System.err.println(
-                    "❌ ERROR IN LOGGING STEP: "
+                    "ERROR IN LOGGING STEP: "
                             + e.getMessage()
             );
 

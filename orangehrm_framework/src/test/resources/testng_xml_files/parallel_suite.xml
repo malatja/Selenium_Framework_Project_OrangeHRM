@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="OrangeHRM Automation Suite"
+       parallel="methods"
+       thread-count="3"
+       data-provider-thread-count="3"
+       verbose="2">
+
+    <!-- Test Execution -->
+    <test name="OrangeHRM Parallel Tests">
+
+        <classes>
+            <class name="tests.Admin_Suite_Tests"/>
+            <class name="tests.Login_Suite_Tests"/>
+
+        </classes>
+
+    </test>
+
+</suite>

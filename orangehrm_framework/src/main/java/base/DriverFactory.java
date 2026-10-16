@@ -1,3 +1,4 @@
+
 package base;
 
 import org.openqa.selenium.WebDriver;
@@ -8,73 +9,96 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class DriverFactory {
 
     /*
-     * ThreadLocal WebDriver allows each test thread
-     * to have its own browser instance.
+     * ThreadLocal WebDriver ensures that
+     * every parallel thread has its own browser.
      */
+
     private static final ThreadLocal<WebDriver> driverThread =
             new ThreadLocal<>();
 
 
     /**
-     * Initialises the browser.
-     *
-     * @param browserName Browser to launch:
-     *                    chrome, firefox, or edge.
+     * Initialises browser for the current thread.
      */
+
     public static void initializeDriver(String browserName) {
+
+        // Prevent accidental driver replacement
+        if (driverThread.get() != null) {
+
+            throw new IllegalStateException(
+                    "WebDriver is already initialised for this thread."
+            );
+        }
 
         // Default browser
         if (browserName == null || browserName.isBlank()) {
+
             browserName = "chrome";
         }
+
+        WebDriver driver;
 
         switch (browserName.toLowerCase()) {
 
             case "chrome":
-                driverThread.set(
-                        new ChromeDriver()
-                );
+
+                driver = new ChromeDriver();
                 break;
 
             case "firefox":
-                driverThread.set(
-                        new FirefoxDriver()
-                );
+
+                driver = new FirefoxDriver();
                 break;
 
             case "edge":
-                driverThread.set(
-                        new EdgeDriver()
-                );
+
+                driver = new EdgeDriver();
                 break;
 
             default:
+
                 throw new IllegalArgumentException(
                         "Unsupported browser: "
                                 + browserName
-                                + ". Supported browsers: "
-                                + "chrome, firefox, edge."
+                                + ". Supported browsers: chrome, firefox, edge."
                 );
         }
 
-        // Maximise browser window
-        getDriver()
-                .manage()
-                .window()
-                .maximize();
+        // Store driver against current thread
+        driverThread.set(driver);
+
+        try {
+
+            // Maximise browser window
+            getDriver()
+                    .manage()
+                    .window()
+                    .maximize();
+
+        } catch (RuntimeException e) {
+
+            quitDriver();
+
+            throw e;
+        }
+
+        System.out.println(
+                "DRIVER INITIALISED | Browser: "
+                        + browserName
+                        + " | Thread: "
+                        + Thread.currentThread().getId()
+        );
     }
 
 
     /**
-     * Returns the WebDriver instance
-     * belonging to the current thread.
-     *
-     * @return WebDriver instance
+     * Returns WebDriver for current thread.
      */
+
     public static WebDriver getDriver() {
 
-        WebDriver driver =
-                driverThread.get();
+        WebDriver driver = driverThread.get();
 
         if (driver == null) {
 
@@ -89,15 +113,9 @@ public class DriverFactory {
 
 
     /**
-     * Checks whether a WebDriver instance
-     * currently exists for this thread.
-     *
-     * This is useful for HybridStepLogger
-     * before attempting to capture screenshots.
-     *
-     * @return true if WebDriver exists,
-     *         otherwise false
+     * Checks whether current thread has a driver.
      */
+
     public static boolean hasDriver() {
 
         return driverThread.get() != null;
@@ -105,13 +123,12 @@ public class DriverFactory {
 
 
     /**
-     * Quits the browser and removes
-     * the WebDriver from ThreadLocal.
+     * Closes browser and removes ThreadLocal reference.
      */
+
     public static void quitDriver() {
 
-        WebDriver driver =
-                driverThread.get();
+        WebDriver driver = driverThread.get();
 
         if (driver != null) {
 
@@ -121,10 +138,6 @@ public class DriverFactory {
 
             } finally {
 
-                /*
-                 * Always remove the driver
-                 * from ThreadLocal.
-                 */
                 driverThread.remove();
             }
         }

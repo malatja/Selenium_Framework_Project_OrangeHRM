@@ -1,10 +1,13 @@
-
 package base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 public class DriverFactory {
 
@@ -20,7 +23,6 @@ public class DriverFactory {
     /**
      * Initialises browser for the current thread.
      */
-
     public static void initializeDriver(String browserName) {
 
         // Prevent accidental driver replacement
@@ -38,24 +40,55 @@ public class DriverFactory {
         }
         
 
+        // Read headless configuration from Maven
+        boolean headless = Boolean.parseBoolean(
+                System.getProperty("headless", "false")
+        );
+
         WebDriver driver;
 
         switch (browserName.toLowerCase()) {
 
             case "chrome":
 
-                driver = new ChromeDriver();
+                ChromeOptions chromeOptions = new ChromeOptions();
+
+                if (headless) {
+                    chromeOptions.addArguments("--headless=new");
+                    chromeOptions.addArguments("--window-size=1920,1080");
+                }
+
+                driver = new ChromeDriver(chromeOptions);
+
                 break;
+
 
             case "firefox":
 
-                driver = new FirefoxDriver();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+
+                if (headless) {
+                    firefoxOptions.addArguments("-headless");
+                }
+
+                driver = new FirefoxDriver(firefoxOptions);
+
                 break;
+
 
             case "edge":
 
-                driver = new EdgeDriver();
+                EdgeOptions edgeOptions = new EdgeOptions();
+
+                if (headless) {
+                    edgeOptions.addArguments("--headless=new");
+                    edgeOptions.addArguments("--window-size=1920,1080");
+                }
+
+                driver = new EdgeDriver(edgeOptions);
+
                 break;
+
 
             default:
 
@@ -87,6 +120,8 @@ public class DriverFactory {
         System.out.println(
                 "DRIVER INITIALISED | Browser: "
                         + browserName
+                        + " | Headless: "
+                        + headless
                         + " | Thread: "
                         + Thread.currentThread().getId()
         );
@@ -96,7 +131,6 @@ public class DriverFactory {
     /**
      * Returns WebDriver for current thread.
      */
-
     public static WebDriver getDriver() {
 
         WebDriver driver = driverThread.get();
@@ -116,7 +150,6 @@ public class DriverFactory {
     /**
      * Checks whether current thread has a driver.
      */
-
     public static boolean hasDriver() {
 
         return driverThread.get() != null;
@@ -126,7 +159,6 @@ public class DriverFactory {
     /**
      * Closes browser and removes ThreadLocal reference.
      */
-
     public static void quitDriver() {
 
         WebDriver driver = driverThread.get();

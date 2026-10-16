@@ -19,20 +19,27 @@ public final class AllureEnvironmentManager {
     }
 
 
-    public static void createEnvironmentFile() {
+    /**
+     * Creates Allure environment.properties
+     * with browser, suite and execution details.
+     *
+     * @param suiteName TestNG suite name
+     */
+    public static void createEnvironmentFile(String suiteName) {
 
         try {
 
+            // Create Allure results directory
             Path resultsDirectory =
                     Paths.get(ALLURE_RESULTS_DIRECTORY);
 
-            Files.createDirectories(
-                    resultsDirectory
-            );
+            Files.createDirectories(resultsDirectory);
 
-            Properties properties =
-                    new Properties();
 
+            Properties properties = new Properties();
+
+
+            // Project information
             properties.setProperty(
                     "Project",
                     "OrangeHRM Automation Framework"
@@ -48,14 +55,55 @@ public final class AllureEnvironmentManager {
                     "TestNG"
             );
 
+
+            // Browser configuration
+            String browser = System.getProperty(
+                    "browser",
+                    "chrome"
+            );
+
             properties.setProperty(
                     "Browser",
+                    browser
+            );
+
+
+            // Headless configuration
+            boolean headless = Boolean.parseBoolean(
+                    System.getProperty("headless", "false")
+            );
+
+            properties.setProperty(
+                    "Headless",
+                    String.valueOf(headless)
+            );
+
+            properties.setProperty(
+                    "Execution.Mode",
+                    headless ? "Headless" : "Normal"
+            );
+
+
+            // TestNG suite information
+            properties.setProperty(
+                    "Suite.Name",
+                    suiteName != null && !suiteName.isBlank()
+                            ? suiteName
+                            : "Unknown Suite"
+            );
+
+
+            // Environment configuration
+            properties.setProperty(
+                    "Environment",
                     System.getProperty(
-                            "browser",
-                            "chrome"
+                            "environment",
+                            "QA"
                     )
             );
 
+
+            // System information
             properties.setProperty(
                     "Java.Version",
                     System.getProperty("java.version")
@@ -66,18 +114,13 @@ public final class AllureEnvironmentManager {
                     System.getProperty("os.name")
             );
 
-            properties.setProperty(
-                    "Environment",
-                    System.getProperty(
-                            "environment",
-                            "QA"
-                    )
-            );
 
+            // Create environment.properties
             Path environmentFile =
                     resultsDirectory.resolve(
                             "environment.properties"
                     );
+
 
             try (FileOutputStream outputStream =
                          new FileOutputStream(
@@ -89,6 +132,25 @@ public final class AllureEnvironmentManager {
                         "OrangeHRM Test Environment"
                 );
             }
+
+
+            System.out.println(
+                    "ALLURE ENVIRONMENT FILE CREATED"
+            );
+
+            System.out.println(
+                    "Browser: " + browser
+            );
+
+            System.out.println(
+                    "Suite: " + suiteName
+            );
+
+            System.out.println(
+                    "Execution Mode: "
+                            + (headless ? "Headless" : "Normal")
+            );
+
 
         } catch (IOException e) {
 
